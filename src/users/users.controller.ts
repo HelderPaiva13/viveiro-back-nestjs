@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Post, UnprocessableEntityException } from '@nestjs/common';
+import { Body, Controller, Get, Post, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { UserRole } from './user-roles.enum';
 import { ReturnUserDto } from './dtos/return-user.dto';
 
 @Controller('users')
@@ -11,13 +10,17 @@ export class UsersController {
 
   @Get()
   async getUsers() {
-    return await this.userService.findAll()
+    return await this.userService.find();
   }
 
   @Post()
   async createAdminUser(
-    @Body() createUserDto: CreateUserDto,
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
   ): Promise<ReturnUserDto> {
-    return await this.userService.createUserAdmin(createUserDto, UserRole.ADMIN)
+    const user = await this.userService.createAdminUser(createUserDto);
+    return {
+      user,
+      message: 'Admin cadastrado com sucesso',
+    }
   }
 }
