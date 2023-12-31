@@ -14,6 +14,7 @@ ele com o decorator @Injectable(), e tambem adicionar aos providers do modulu
 export class UserRepository extends Repository<User> {
   constructor(private dataSouce: DataSource){
     super(User, dataSouce.createEntityManager());
+    
   }
 
   async createUser( createUserDto: CreateUserDto, role: UserRole, ): Promise<User> {
