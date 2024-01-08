@@ -18,6 +18,8 @@ export class UsersController {
   async createAdminUser(
     @Body(ValidationPipe) createUserDto: CreateUserDto,
   ): Promise<ReturnUserDto> {
+    
+
     const user = await this.userService.createAdminUser(createUserDto, UserRole.ADMIN);
     return {
       user,

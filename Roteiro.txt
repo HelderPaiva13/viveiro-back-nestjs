@@ -1,0 +1,3 @@
+ja tenho o session funcionando, agora tenho que devolver o token na sessão 
+e na rota #/me desfazer o token e procurar pelo id
+
