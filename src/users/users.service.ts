@@ -68,7 +68,7 @@ export class UsersService extends Repository<User> {
     return this.find();
   }
 
-  async findOneUser( id: string): Promise<User> {
+  async findOneUser( id: any): Promise<User> {
     return this.findOne({
       where: {
         id

@@ -22,7 +22,11 @@ export class AuthService {
       return await this.userService.createAdminUser(createUserDto, UserRole.USER);
     }
   }
-
+  /*
+  aqui verifico as credenciais, pego o id uso o
+  jwtService.sign(mandando um objeto jwtPayload com uma chave id)
+  para gerar meu token e retorno o token para o authController
+  */
   async signIn(credentialsDto: CredentialsDto) {
     const user = await this.userService.checkCredentials(credentialsDto);
     console.log(user);
@@ -37,11 +41,22 @@ export class AuthService {
 
     const token = this.jwtService.sign(jwtPayload);
 
-    return {user};
+    return {token};
   }
-
-  async findMe( ids: any){
-    const id = ids
+  /**
+   * faço um destruct no argumento para pegar só a string token
+   * vejo se exite, caso não mando um erro 
+   * depois chamo o veriry que retorna um objeto, faço novamente 
+   * um destruct
+   * @param param0 
+   * @returns 
+   */
+  async findMe( {token}: any){
+    if(!token){
+      throw new UnauthorizedException('Faça login');
+    }
+    
+    const {id} = this.jwtService.verify(token)
     return this.userService.findOneBy({
       id,
     })

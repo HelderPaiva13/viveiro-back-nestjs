@@ -1,3 +1,8 @@
 ja tenho o session funcionando, agora tenho que devolver o token na sessão 
 e na rota #/me desfazer o token e procurar pelo id
 
+PAREI NO VIDEO 12 DE AUTHENTICATION FROM SCRATCH 
+PARTE 2 DO 
+
+
+agora colocar o Guard na rota
