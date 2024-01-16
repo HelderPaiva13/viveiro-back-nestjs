@@ -1,8 +1,15 @@
 ja tenho o session funcionando, agora tenho que devolver o token na sessão 
 e na rota #/me desfazer o token e procurar pelo id
 
-PAREI NO VIDEO 12 DE AUTHENTICATION FROM SCRATCH 
-PARTE 2 DO 
+terminei a pasta AUTHENTICATION FROM SCRATCH 
+ok -- criando o intecept: vou pegar o token e mandar para o service 
+
+-- colocar o Guard nas rotas necessárias --
+-- criar uma seeds para registrar um admin --
+-- só criar novos admin caso esteja um admin autenticado -- 
+-- ver a questao de mudar o token do session para a resposta normal e usar Baerer  -- 
+-- seguir o diagrama feito no Bard ou ChatGPT -- 
+-- criar o modulo de plantas -- 
 
 
 agora colocar o Guard na rota

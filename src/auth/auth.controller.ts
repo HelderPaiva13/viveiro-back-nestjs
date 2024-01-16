@@ -1,12 +1,19 @@
-import { Body, Controller, Get, Param, Post, Req, Session, UseGuards, ValidationPipe } from '@nestjs/common';
+import { 
+  Body, 
+  Controller, 
+  Get, 
+  Post, 
+  Session, 
+  UseGuards, 
+  ValidationPipe,
+  
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { CredentialsDto } from './dto/credentials.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/users/user.entity';
-import { GetUser } from './get-user.decorator';
-import { JwtStrategy } from './jwt.strategy';
-import { session } from 'passport';
+import { CurrentUser } from './decorator/current-user.decorator';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -56,10 +63,18 @@ export class AuthController {
    * @param session 
    * @returns 
    */
+  // @Get('/me')
+  // async getMe(@Session() session: any) {
+  //   if(!session.userToken){
+  //     throw new UnauthorizedException('faça login');
+  //   }
+  //   return await  this.authService.findMe(session.userToken);
+  // }
+
   @Get('/me')
-  async getMe(@Session() session: any) {
-    console.log(session.userToken)
-    return await  this.authService.findMe(session.userToken);
+  @UseGuards(AuthGuard)
+  async getMe(@CurrentUser() user: User){
+    return user
   }
   
 

@@ -57,8 +57,8 @@ export class AuthService {
     }
     
     const {id} = this.jwtService.verify(token)
-    return this.userService.findOneBy({
-      id,
+    return this.userService.findOne({
+      where:{id},
     })
   }
 }
