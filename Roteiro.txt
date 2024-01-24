@@ -4,7 +4,12 @@ e na rota #/me desfazer o token e procurar pelo id
 terminei a pasta AUTHENTICATION FROM SCRATCH 
 ok -- criando o intecept: vou pegar o token e mandar para o service 
 
--- colocar o Guard nas rotas necessárias --
+ok-- colocar o Guard nas rotas necessárias --
+  obs falta testar criar um adm sem ser adm e tirar o guard do signup User
+ERROR: reading 'role'
+
+tentar mudar pela documentacao: https://docs.nestjs.com/security/authorization#basic-rbac-implementation
+
 -- criar uma seeds para registrar um admin --
 -- só criar novos admin caso esteja um admin autenticado -- 
 -- ver a questao de mudar o token do session para a resposta normal e usar Baerer  -- 

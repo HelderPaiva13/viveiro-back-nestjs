@@ -20,14 +20,13 @@ export class AuthController {
 
   constructor (private authService: AuthService){}
 
-  @Post('/signup',)
+  @Post('/signup')
   async signUp(
     @Body(ValidationPipe) createUserDto: CreateUserDto,
     @Session() session: any
   ): Promise< { message: string} > {
     const user = await this.authService.signUp(createUserDto);
     session.userId = user.id
-    console.log("USER", user);
     return {
       message: 'Cadastro realisado com sucesso'
     };

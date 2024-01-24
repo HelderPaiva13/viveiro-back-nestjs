@@ -5,11 +5,12 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 
 
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig), 
     UsersModule, 
-    AuthModule
+    AuthModule,
   ],
   controllers: [],
   providers: [],
