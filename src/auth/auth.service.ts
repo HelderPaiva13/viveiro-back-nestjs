@@ -1,4 +1,4 @@
-import {Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
+import {Inject, Injectable, UnauthorizedException, UnprocessableEntityException, forwardRef } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { UserRole } from 'src/users/user-roles.enum';
 import { User } from 'src/users/user.entity';
@@ -6,12 +6,13 @@ import { UsersService } from 'src/users/users.service';
 import { CredentialsDto } from './dto/credentials.dto';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserRepository } from 'src/users/user.repository';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectRepository(UsersService)
-   private readonly userService: UsersService,
+    @InjectRepository(UserRepository)
+   private readonly userRepository: UserRepository,
    private jwtService: JwtService,
   ){}
 
@@ -19,7 +20,7 @@ export class AuthService {
     if (createUserDto.password != createUserDto.passwordConfirmation){
       throw new UnprocessableEntityException('As senhas não conferem');
     } else {
-      return await this.userService.createAdminUser(createUserDto, UserRole.USER);
+      return await this.userRepository.createUser(createUserDto, UserRole.USER);
     }
   }
   /*
@@ -28,15 +29,14 @@ export class AuthService {
   para gerar meu token e retorno o token para o authController
   */
   async signIn(credentialsDto: CredentialsDto) {
-    const user = await this.userService.checkCredentials(credentialsDto);
-    console.log(user);
+    const user = await this.userRepository.checkCredentials(credentialsDto);
     
     if(user === null){
       throw new UnauthorizedException('credenciais invalidas');
     }
 
     const jwtPayload = {
-      id: user.id
+      id: user.id,
     }
 
     const token = this.jwtService.sign(jwtPayload);
@@ -57,7 +57,7 @@ export class AuthService {
     }
     
     const {id} = this.jwtService.verify(token)
-    return this.userService.findOne({
+    return this.userRepository.findOne({
       where:{id},
     })
   }

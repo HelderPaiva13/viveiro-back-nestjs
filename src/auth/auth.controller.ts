@@ -3,6 +3,7 @@ import {
   Controller, 
   Get, 
   Post, 
+  Req, 
   Session, 
   UseGuards, 
   ValidationPipe,
@@ -12,8 +13,9 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { CredentialsDto } from './dto/credentials.dto';
 import { User } from 'src/users/user.entity';
-import { CurrentUser } from './decorator/current-user.decorator';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { GetUser } from './decorator/get-user.decorator';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -44,10 +46,8 @@ export class AuthController {
   @Post('/signin')
   async signIn(
     @Body(ValidationPipe) credentialsDto: CredentialsDto,
-    @Session() session: any
   ): Promise<{token: string}> {
     const token = await this.authService.signIn(credentialsDto);
-    session.userToken = token
     return token;
   }
 
@@ -71,9 +71,9 @@ export class AuthController {
   // }
 
   @Get('/me')
-  @UseGuards(AuthGuard)
-  async getMe(@CurrentUser() user: User){
-    return user
+  @UseGuards(JwtAuthGuard)
+  getMe(@GetUser() user: User): User {
+    return user;
   }
   
 

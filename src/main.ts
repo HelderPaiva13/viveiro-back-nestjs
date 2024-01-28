@@ -8,7 +8,8 @@ async function bootstrap() {
   app.use(cookieSession({
     keys: ['asdfkjfa12df1df2dfd@'],
     
-  }))
+  }));
+
   await app.listen(3000);
 }
 bootstrap();

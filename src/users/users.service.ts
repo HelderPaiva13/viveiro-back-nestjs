@@ -1,87 +1,31 @@
-import {ConflictException, Injectable, InternalServerErrorException, UnprocessableEntityException, Session } from '@nestjs/common';
+import {ConflictException, Injectable, InternalServerErrorException, UnprocessableEntityException, Session, NotFoundException } from '@nestjs/common';
 import { User } from './user.entity';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UserRole } from './user-roles.enum';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { CredentialsDto } from 'src/auth/dto/credentials.dto';
+import { UserRepository } from './user.repository';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
-export class UsersService extends Repository<User> {
+export class UsersService {
   
-  constructor(private dataSource: DataSource){
-    super(User, dataSource.createEntityManager())
+  constructor(
+    @InjectRepository(UserRepository) 
+    private readonly userRepository: UserRepository){
   }
 
-  async createAdminUser(createUserDto: CreateUserDto, userRole: UserRole): Promise<User> {
+  async createAdminUser(createUserDto: CreateUserDto): Promise<User> {
     if(createUserDto.password != createUserDto.passwordConfirmation){
       throw new UnprocessableEntityException('As senhas não conferem');
     } else {
-      const { email, name, password} = createUserDto;
-
-      const user = this.create();
-      user.email = email;
-      user.name = name;
-      user.role = userRole;
-      user.status = true;
-      user.confirmationToken = crypto.randomBytes(32).toString('hex');
-      user.salt = await bcrypt.genSalt();
-      user.password = await this.hashPassword(password, user.salt);
-
-      try {
-        await user.save();
-        delete user.password;
-        delete user.salt;
-        return user;
-      } catch (error) {
-        if(error.code.toString() === '23505'){
-          throw new ConflictException('Endereço de email ja esta em uso');
-        } else {
-          throw new InternalServerErrorException(
-            'Erro ao salvar o usuário no banco de dados',
-          );
-        }
-      }
-
+      return this.userRepository.createUser(createUserDto, UserRole.ADMIN)
     }
   }
 
-  async checkCredentials(credentialsDto: CredentialsDto): Promise<User> {
-    const {email, password} = credentialsDto;
-    const user = await this.findOneBy(
-      {
-      email,
-      status: true,
-      }
-    );
-
-    if(user && (await user.checkPassword(password))){
-      return user;
-    } else {
-      return null;
-    }
-  }
-
-
-  async findAll(): Promise<User[]> {
-    return this.find();
-  }
-
-  async findOneUser( id: any): Promise<User> {
-    return this.findOne({
-      where: {
-        id
-      },
-      select: {
-        name: true,
-        email: true,
-        status: true,
-        role: true
-      }
-    });
-  }
-
+  
   private async hashPassword(password:string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
   }

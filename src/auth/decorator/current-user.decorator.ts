@@ -6,7 +6,7 @@ import {
 
 export const CurrentUser = createParamDecorator(
   (data: never, ctx: ExecutionContext) => {
-    console.log('DECORATOR CURRENT-USER....')
+    console.log('DECORATOR CURRENT-USER....',)
     const request = ctx.switchToHttp().getRequest();
     return request.currentUser;
   }
