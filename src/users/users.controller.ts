@@ -5,6 +5,8 @@ import { ReturnUserDto } from './dtos/return-user.dto';
 import { UserRole } from './user-roles.enum';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { RoleGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/auth/decorator/role.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -14,7 +16,8 @@ export class UsersController {
 
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @Roles(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   async createAdminUser(
     @Body(ValidationPipe) createUserDto: CreateUserDto,
   ): Promise<ReturnUserDto> {
